@@ -1,10 +1,18 @@
 % Calculate the Attractive Field force to plot the vector field
-% Uattr is a output vector size based on the q
+% Z is a output vector size based on the q
 % q is the input vector of position x, y
 % qd is the goal position x, y
-% Katt is constanta of attractive
-% a and b is paraboloid curvature
-% maxVel is the maximum velocity to saturate the linear
+% Equation that calculates the Attractive Field force:
+% Fatt(q) = 0.5 * Katt * (qd - q)^2
+
+% 1.0
+% function Uattr = AttractiveField(q, qd, Katt)
+%     % Reshape qd to allow for broadcasting with q
+%     qd = qd(:);
+%     Uattr = 0.5 * Katt * sum((qd - q).^2, 1);
+% end
+
+% When dist_to_goal < 100, use the paraboloid
 % When dist_to_goal > 100, use the linear but in 3 axis with input x and y
 function Uattr = AttractiveField(q, qd, Katt, a, b, maxVel)
     dist_to_goal = sqrt((q(1) - qd(1))^2 + (q(2) - qd(2))^2);

@@ -1,0 +1,5 @@
+
+function AttractiveField(q, qd, Katt, a, b, maxVel) {
+    distance_to_goal = Math.sqrt(Math.pow(qd[0] - q[0], 2) + Math.pow(qd[1] - q[1], 2));
+    static max_u;
+}

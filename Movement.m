@@ -1,14 +1,20 @@
+close all; 
+clc;
+
 % Simulation parameters
-TOTAL_ = 200;
-Kattr = 0.5;
-Krepl = 1000;
-d0 = 100; % Threshold distance for the repulsive potential
+TOTAL_ = 400;
+Kattr = 1;
+Krepl = 10000000;
+d0 = 50; % example threshold distance for the repulsive potential
 goal = [TOTAL_ * 0.5; TOTAL_ * 0.5]; % Initialize goal
 obstacles = [50, 50; 100, 150; 150, 100; 80, 180; 180, 80]; % Obstacle coordinates
 robotPos = [10; 10]; % Initial position of the robot
 stepSize = 1; % The step size of the robot
 maxIterations = 1000; % Maximum number of iterations to simulate
 goalThreshold = 5; % Distance threshold to consider goal reached
+a  = 1; % parabolic curvature of the attractive potential
+b  = 1; % parabolic curvature of the repulsive potential
+maxVel = 50;
 
 % Initialize positions to calculate
 [x, y] = meshgrid(linspace(0, TOTAL_, TOTAL_), linspace(0, TOTAL_, TOTAL_));
@@ -21,7 +27,9 @@ Utotal = zeros(size(x));
 for i = 1:size(x, 1)
     for j = 1:size(x, 2)
         pos = [x(i, j); y(i, j)];
-        Uattr(i, j) = AttractiveField(pos, goal', Kattr);
+%         Uattr(i, j) = AttractiveField(pos, goal', Kattr);
+        q = [x(i, j); y(i, j)];
+        Uattr(i, j) = AttractiveField(q, goal, Kattr, a, b, maxVel);
 
         Urep(i, j) = 0;
         
@@ -42,16 +50,16 @@ step = 10; % Define the step size for visualization
 
 for iter = 1:maxIterations
     % Calculate gradient of the total potential at robot position
-    [gradX, gradY] = gradient(Utotal);
+    [gradX, gradY] = gradient(Uattr);
 
     gradX = gradX * -1;
     gradY = gradY * -1;
     
     % Saturate the gradients to maximum of 20
-%     gradX = min(max(gradX, -20), 20);
-%     gradY = min(max(gradY, -20), 20);
+    gradX = min(max(gradX, -20), 20);
+    gradY = min(max(gradY, -20), 20);
 
-    disp(gradX(round(robotPos(2)), round(robotPos(1))))
+%     disp(gradX(round(robotPos(2)), round(robotPos(1))))
 
     % Update the robot position
     grad = [gradX(round(robotPos(2)), round(robotPos(1))); gradY(round(robotPos(2)), round(robotPos(1)))];
@@ -67,6 +75,16 @@ for iter = 1:maxIterations
         break;
     end
 end
+
+[gradX, gradY] = gradient(Uattr);
+
+% print gradient at 1,1
+disp(gradX(1,1))
+disp(gradY(1,1))
+
+% print next 10th gradient
+disp(gradX(10,10))
+disp(gradY(10,10))
 
 % After the loop, display the vector field using quiver with a step of 10
 figure(1); clf; hold on; % Clear figure, hold on to plot multiple datasets
