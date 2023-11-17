@@ -1,7 +1,31 @@
+% AttractiveForce - Calculates the attractive force between a current position q and a goal position qd
+%
+% Syntax:
+%    Fatt = AttractiveForce(q, qd, Katt, a, b, maxVel)
+%
+% Inputs:
+%    q - Current position (2D vector)
+%    qd - Goal position (2D vector)
+%    Katt - Attractive force gain
+%    a - Parabolic curvature of the attractive potential
+%    b - Parabolic curvature of the attractive potential
+%    maxVel - Maximum velocity or force magnitude to apply
+%
+% Output:
+%    Fatt - Attractive force (2D vector)
+%
+% Example:
+%    Fatt = AttractiveForce([0; 0], [10; 10], 1, 1, 1, 100)
+%
+% Other m-files required: None
+% Subfunctions: None
+% MAT-files required: None
+%
+% See also: RepulsiveForce
 function Fatt = AttractiveForce(q, qd, Katt, a, b, maxVel)
     dist_to_goal = sqrt((q(1) - qd(1))^2 + (q(2) - qd(2))^2);
     
-    if dist_to_goal < 75
+    if dist_to_goal < 200
         % Compute the gradient of the paraboloid potential at point q with the goal at qd
         grad_x = Katt * (q(1) - qd(1)) / a^2;
         grad_y = Katt * (q(2) - qd(2)) / b^2;

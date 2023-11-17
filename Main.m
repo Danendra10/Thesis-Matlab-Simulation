@@ -38,31 +38,23 @@ end
 
 [gradX, gradY] = gradient(Uattr);
 
-% print gradient at 1,1
-disp(gradX(1,1))
-disp(gradY(1,1))
+% localMinimaPoints = FindLocalMinima(Utotal);
+% disp('Local Minima Points')
+% disp(localMinimaPoints)
 
-% print next 10th gradient
-disp(gradX(10,10))
-disp(gradY(10,10))
+% [globalMinValue, minRow, minCol] = FindGlobalMinima(Utotal);
 
-localMinimaPoints = FindLocalMinima(Utotal);
-disp('Local Minima Points')
-disp(localMinimaPoints)
+% % Display the results
+% disp(['Global minimum value: ', num2str(globalMinValue)]);
+% disp(['Global minimum position: (', num2str(minRow), ', ', num2str(minCol), ')']);
 
-[globalMinValue, minRow, minCol] = FindGlobalMinima(Utotal);
+% localMaximaPoints = FindLocalMaxima(Utotal);
+% disp("Local Maxima:")
+% disp(localMaximaPoints)
 
-% Display the results
-disp(['Global minimum value: ', num2str(globalMinValue)]);
-disp(['Global minimum position: (', num2str(minRow), ', ', num2str(minCol), ')']);
-
-localMaximaPoints = FindLocalMaxima(Utotal);
-disp("Local Maxima:")
-disp(localMaximaPoints)
-
-[globalMaxValue, maxRow, maxCol] = FindGlobalMaxima(Uattr);
-disp(['Global maximum value: ', num2str(globalMaxValue)]);
-disp(['Global maximum position: (', num2str(maxRow), ', ', num2str(maxCol), ')']);
+% [globalMaxValue, maxRow, maxCol] = FindGlobalMaxima(Uattr);
+% disp(['Global maximum value: ', num2str(globalMaxValue)]);
+% disp(['Global maximum position: (', num2str(maxRow), ', ', num2str(maxCol), ')']);
 
 
 % Display as surf

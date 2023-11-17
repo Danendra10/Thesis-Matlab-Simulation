@@ -2,12 +2,12 @@ close all;
 clc;
 
 % Simulation parameters
-TOTAL_ = 400;
+TOTAL_ = 1200;
 Kattr = 1;
-Krepl = 10000000;
-d0 = 50; % example threshold distance for the repulsive potential
+Krepl = 100000;
+d0 = 100; % example threshold distance for the repulsive potential
 goal = [TOTAL_ * 0.5; TOTAL_ * 0.5]; % Initialize goal
-obstacles = [50, 50; 100, 150; 150, 100; 80, 180; 180, 80]; % Obstacle coordinates
+obstacles = [200, 1000; 400, 150; 150, 400; 800, 700; 1000, 800]; % Obstacle coordinates
 robotPos = [10; 10]; % Initial position of the robot
 stepSize = 1; % The step size of the robot
 maxIterations = 1000; % Maximum number of iterations to simulate
@@ -25,9 +25,8 @@ Urep = zeros(size(x));
 Utotal = zeros(size(x));
 
 for i = 1:size(x, 1)
-    for j = 1:size(x, 2)
+    for j = 1:size(x, 1)
         pos = [x(i, j); y(i, j)];
-%         Uattr(i, j) = AttractiveField(pos, goal', Kattr);
         q = [x(i, j); y(i, j)];
         Uattr(i, j) = AttractiveField(q, goal, Kattr, a, b, maxVel);
 
@@ -37,7 +36,6 @@ for i = 1:size(x, 1)
         for k = 1:size(obstacles, 1)
             obstacle = obstacles(k, :)';
             d = norm(pos - obstacle);
-%             disp(d)
             Urep(i, j) = Urep(i, j) + RepulsiveField(d, d0, Krepl) ;
         end
         Utotal(i, j) = Uattr(i, j) + Urep(i, j);
@@ -79,33 +77,33 @@ end
 [gradX, gradY] = gradient(Uattr);
 
 % print gradient at 1,1
-disp(gradX(1,1))
-disp(gradY(1,1))
+% disp(gradX(1,1))
+% disp(gradY(1,1))
 
 % print next 10th gradient
-disp(gradX(10,10))
-disp(gradY(10,10))
+% disp(gradX(10,10))
+% disp(gradY(10,10))
 
 % After the loop, display the vector field using quiver with a step of 10
-figure(1); clf; hold on; % Clear figure, hold on to plot multiple datasets
-quiver(X, Y, gradX(1:step:end, 1:step:end), gradY(1:step:end, 1:step:end), 'AutoScale', 'off'); % Plot the gradient field
-plot(robotPos(1), robotPos(2), 'ro'); % Plot the robot position
-xlim([1 TOTAL_]); ylim([1 TOTAL_]); % Set the axis limits
-title('Gradient Vector Field with Robot Path');
-xlabel('X');
-ylabel('Y');
-hold off; % Release the plot hold
+% figure(1); clf; hold on; % Clear figure, hold on to plot multiple datasets
+% quiver(X, Y, gradX(1:step:end, 1:step:end), gradY(1:step:end, 1:step:end), 'AutoScale', 'off'); % Plot the gradient field
+% plot(robotPos(1), robotPos(2), 'ro'); % Plot the robot position
+% xlim([1 TOTAL_]); ylim([1 TOTAL_]); % Set the axis limits
+% title('Gradient Vector Field with Robot Path');
+% xlabel('X');
+% ylabel('Y');
+% hold off; % Release the plot hold
 
 % Plotting the results
 % Display the attractive potential field
-figure
-surf(x, y, Uattr)
-title('Attractive Potential Field')
-xlabel('x')
-ylabel('y')
-zlabel('U_{attr}')
-shading interp
-colorbar
+% figure
+% surf(x, y, Uattr)
+% title('Attractive Potential Field')
+% xlabel('x')
+% ylabel('y')
+% zlabel('U_{attr}')
+% shading interp
+% colorbar
 
 % Display the repulsive potential field
 figure
@@ -118,34 +116,31 @@ shading interp
 colorbar
 
 % Display the total potential field
-figure
-surf(x, y, Utotal)
-title('Total Potential Field')
-xlabel('x')
-ylabel('y')
-zlabel('U_{total}')
-shading interp
-colorbar
-hold on
+% figure
+% surf(x, y, Utotal)
+% title('Total Potential Field')
+% xlabel('x')
+% ylabel('y')
+% zlabel('U_{total}')
+% shading interp
+% colorbar
+% hold on
 
 % Plot the path of the robot as a line on the total potential field
-plot3(robotPos(1), robotPos(2), Utotal(round(robotPos(2)), round(robotPos(1))), 'bo', 'MarkerSize', 10, 'MarkerFaceColor', 'blue');
+% plot3(robotPos(1), robotPos(2), Utotal(round(robotPos(2)), round(robotPos(1))), 'bo', 'MarkerSize', 10, 'MarkerFaceColor', 'blue');
 
 % Label the robot's final position
-text(robotPos(1), robotPos(2), Utotal(round(robotPos(2)), round(robotPos(1))), ' Robot', 'VerticalAlignment', 'bottom', 'HorizontalAlignment', 'right');
+% text(robotPos(1), robotPos(2), Utotal(round(robotPos(2)), round(robotPos(1))), ' Robot', 'VerticalAlignment', 'bottom', 'HorizontalAlignment', 'right');
 
 % Plot the goal position
-plot3(goal(1), goal(2), Utotal(round(goal(2)), round(goal(1))), 'ro', 'MarkerSize', 10, 'MarkerFaceColor', 'red');
-text(goal(1), goal(2), Utotal(round(goal(2)), round(goal(1))), ' Goal', 'VerticalAlignment', 'bottom', 'HorizontalAlignment', 'right');
+% plot3(goal(1), goal(2), Utotal(round(goal(2)), round(goal(1))), 'ro', 'MarkerSize', 10, 'MarkerFaceColor', 'red');
+% text(goal(1), goal(2), Utotal(round(goal(2)), round(goal(1))), ' Goal', 'VerticalAlignment', 'bottom', 'HorizontalAlignment', 'right');
 
 % Plot obstacles
-for k = 1:size(obstacles, 1)
-    ob_pos = obstacles(k, :);
-    plot3(ob_pos(1), ob_pos(2), Utotal(ob_pos(2),ob_pos(1)), 'ks', 'MarkerSize', 10, 'MarkerFaceColor', 'black');
-    text(ob_pos(1), ob_pos(2), Utotal(ob_pos(2), ob_pos(1)), ' Obstacle', 'VerticalAlignment', 'bottom', 'HorizontalAlignment', 'right');
-end
+% for k = 1:size(obstacles, 1)
+%     ob_pos = obstacles(k, :);
+%     plot3(ob_pos(1), ob_pos(2), Utotal(ob_pos(2),ob_pos(1)), 'ks', 'MarkerSize', 10, 'MarkerFaceColor', 'black');
+%     text(ob_pos(1), ob_pos(2), Utotal(ob_pos(2), ob_pos(1)), ' Obstacle', 'VerticalAlignment', 'bottom', 'HorizontalAlignment', 'right');
+% end
 
 hold off % Release the figure
-
-% Local and Global Minima and Maxima are not used for robot movement
-% but you can calculate and display them if needed for analysis.

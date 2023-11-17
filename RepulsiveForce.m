@@ -1,3 +1,25 @@
+% RepulsiveForce - Calculates the repulsive force between a current position q and an obstacle
+%
+% Syntax:
+%    Frep = RepulsiveForce(q, obstacle, d0, Krep)
+%
+% Inputs:
+%    q - Current position (2D vector)
+%    obstacle - Position of the obstacle (2D vector)
+%    d0 - Minimum distance for the influence of the obstacle
+%    Krep - Repulsive force gain
+%
+% Output:
+%    Frep - Repulsive force (2D vector)
+%
+% Example:
+%    Frep = RepulsiveForce([0; 0], [5; 5], 2, 1)
+%
+% Other m-files required: None
+% Subfunctions: None
+% MAT-files required: None
+%
+% See also: AttractiveForce
 function Frep = RepulsiveForce(q, obstacle, d0, Krep)
     % Vector from obstacle to point q
     vec_to_q = q - obstacle;

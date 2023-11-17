@@ -4,7 +4,7 @@ clc;
 % Potential Field Main Loop
 TOTAL_ = 400;
 stepSize = 1; % Step size for quiver plot
-maxVel = 100;
+maxVel = 2;
 Kattr = 1;
 Krepl = 1000;
 d0 = 50;
@@ -40,9 +40,6 @@ for i = 1:size(x, 1)
             obstacle = obstacles(k, :)';
             F_rep = RepulsiveForce(q, obstacle, d0, Krepl) ;
             F_rep_total = F_rep_total + F_rep;
-%             if F_rep(1) ~= 0 && F_rep(2) ~= 0
-%                 fprintf('Repulsive force: %f, %f at %f, %f\n', F_rep(1), F_rep(2), q(1), q(2));
-%             end
         end
         Frep_x(i, j) = F_rep_total(1);
         Frep_y(i, j) = F_rep_total(2);
@@ -54,7 +51,7 @@ figure;
 hold on; % Hold on to plot repulsive forces on the same figure
 
 % Now create a quiver plot with the specified step size
-quiver(x, y, Frep_x, Frep_y, 'AutoScale', 'off', 'color', 'b');
+quiver(x(1:20:end, 1:20:end), y(1:20:end, 1:20:end), Fattr_x(1:20:end, 1:20:end), Fattr_y(1:20:end, 1:20:end), 'AutoScale', 'off', 'color', 'b');
 
 title('Repulsive Force Field');
 xlabel('X position');
@@ -63,9 +60,12 @@ ylabel('Y position');
 axis equal tight;
 hold off; % Release the figure for other plots
 
+
+
 % Calculate total forces for each point in the grid
 Ftotal_x = Fattr_x + Frep_x;
 Ftotal_y = Fattr_y + Frep_y;
+Ftotal = [Ftotal_x, Ftotal_y];
 
 % Visualize the total force using a new quiver plot in a different figure
 figure;
@@ -74,3 +74,16 @@ title('Total Force Field');
 xlabel('X position');
 ylabel('Y position');
 axis equal tight;
+
+localMaximaPoints = FindLocalMaxima([Frep_x, Frep_y]);
+disp("Local Maxima:")
+disp(localMaximaPoints)
+
+% Create Voronoi Diagram using the points
+figure;
+voronoi(localMaximaPoints(:, 1), localMaximaPoints(:, 2));
+title('Voronoi Diagram');
+xlabel('X position');
+ylabel('Y position');
+axis([0 TOTAL_ 0 TOTAL_]); % Set axis limits to the size of your field
+axis equal;
